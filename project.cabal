@@ -40,7 +40,12 @@ executable project-exe
       Chapter10
       Chapter11
       Chapter12
+      Chapter13
+      Chapter8
       Chapter9
+      FirstProg
+      OurTest
+      Planner
       Paths_project
   hs-source-dirs:
       app

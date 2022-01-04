@@ -7,9 +7,7 @@ module Chapter12 where
 type PatientName = (String, String)
 
 type FirstName = String
-
 type LastName = String
-
 type MiddleName = String
 
 data Name = Name FirstName LastName | NameWithMiddle FirstName MiddleName LastName
