@@ -2,7 +2,7 @@ module Chapter14 where
 
     data SixSidedDie = S1 | S2 | S3 | S4 | S5 | S6
     
-    data NewEngland = ME | VT | NH | MA | RI | CT deriving(Eq, Ord, Enum)
+    data NewEngland = ME | VT | NH | MA | RI | CT deriving(Eq, Ord)
     instance Show NewEngland where
         show ME = "Maine"
         show VT = "Vermont"
@@ -10,6 +10,7 @@ module Chapter14 where
         show MA = "Massachusetts"
         show RI = "Rhode Island"
         show CT = "Connecticut"
+    instance Enum New
 
     -- instance Eq NewEngland where
     --     (==) ME ME = True
@@ -34,8 +35,3 @@ module Chapter14 where
     --     (<=) NH ME = True 
     --     (<=) MA NH = True
     --     (<=) _ _ = False
-
-    data Name = Name (String, String) deriving (Show, Eq)
-    instance Ord Name where
-        compare (Name (f1,l1)) (Name (f2,l2)) = compare (l1,f1) (l2,f2)
-

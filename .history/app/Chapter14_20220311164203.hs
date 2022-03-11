@@ -10,6 +10,9 @@ module Chapter14 where
         show MA = "Massachusetts"
         show RI = "Rhode Island"
         show CT = "Connecticut"
+    instance Enum NewEngland where
+        fromEnum ME = 127
+        toEnum 
 
     -- instance Eq NewEngland where
     --     (==) ME ME = True
@@ -34,8 +37,3 @@ module Chapter14 where
     --     (<=) NH ME = True 
     --     (<=) MA NH = True
     --     (<=) _ _ = False
-
-    data Name = Name (String, String) deriving (Show, Eq)
-    instance Ord Name where
-        compare (Name (f1,l1)) (Name (f2,l2)) = compare (l1,f1) (l2,f2)
-
