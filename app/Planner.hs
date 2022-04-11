@@ -1,5 +1,4 @@
-module Planner
-  where
+module Planner where
     import Data.Map
     import Data.Maybe
 
