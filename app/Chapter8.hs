@@ -10,7 +10,7 @@ firstHalf x l = x `elem` theFirstHalf
 myGCD a b = if remainder == 0 then b else myGCD b remainder
     where remainder = a `mod` b
 
--- Q7.1
+-- Q
 myTail [] = []
 myTail (_:xs) = xs
 
