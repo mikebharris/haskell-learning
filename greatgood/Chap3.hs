@@ -24,3 +24,29 @@ tell (x:y:_) = "Long list"
 firstLetter :: String -> String
 firstLetter [] = "empty"
 firstLetter all@(x:xs) = "first letter of " ++ all ++ " is " ++ [x]
+
+anorexiaWarning :: String
+anorexiaWarning = "Anorexic!"
+
+fattyDetector :: Double -> Double -> String
+fattyDetector weightKg heightM
+  | bmi <= skinny = anorexiaWarning
+  | bmi  <= normal = "Hench!"
+  | bmi  <= fat = "Sort it out fatso!"
+  | otherwise = "Go see a doctor fatarse!"
+  where bmi = weightKg / heightM ^ 2
+        skinny = 18.5
+        normal = 25.0
+        fat = 30.0
+
+initials :: String -> String -> String
+initials firstname lastname = [f] ++ ". " ++ [l] ++ "."
+  where (f:_) = firstname
+        (l:_) = lastname
+
+initials2 :: String -> String -> String
+initials2 (f:_) (l:_) = [f] ++ ". " ++ [l] ++ "."
+
+calcBmis :: [(Double, Double)] -> [Double]
+calcBmis xs = [bmi w h | (w, h) <-xs]
+  where bmi weight height = weight / height ^ 2
