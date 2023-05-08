@@ -61,7 +61,7 @@ lhs p (x:xs)
 
 
 rhs :: (Ord a) => a -> [a] -> [a]
-rhs _ [] = []
-rhs p (x:xs)
-  | x > p = x : rhs p xs
-  | otherwise = rhs p xs
+-- list comprehension that works as a filter.
+-- Returns every a that is a member of xs and that is greater than p
+-- i.e. filter the list xs according to whether elements satisfy the predicate of being greater than p
+rhs p xs = [ a | a <- xs , a > p]
