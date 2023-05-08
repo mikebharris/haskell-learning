@@ -48,5 +48,20 @@ elem' a (x:xs)
   | a == x = True
   | otherwise = a `elem'` xs
 
+qs :: (Ord a) => [a] -> [a]
+qs [] = []
+qs (x:[]) = [x]
+qs (p:xs) = qs (lhs p xs) ++ [p] ++ qs (rhs p xs)
+
+lhs :: (Ord a) => a -> [a] -> [a]
+lhs _ [] = []
+lhs p (x:xs)
+  | x <= p = x : lhs p xs
+  | otherwise = lhs p xs
 
 
+rhs :: (Ord a) => a -> [a] -> [a]
+rhs _ [] = []
+rhs p (x:xs)
+  | x > p = x : rhs p xs
+  | otherwise = rhs p xs
