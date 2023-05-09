@@ -50,15 +50,8 @@ elem' a (x:xs)
 
 qs :: (Ord a) => [a] -> [a]
 qs [] = []
-qs (x:[]) = [x]
+--qs (x:[]) = [x]
 qs (p:xs) = qs (lhs p xs) ++ [p] ++ qs (rhs p xs)
-
-qs2 :: (Ord a) => [a] -> [a]
-qs2 [] = []
-qs2 (p:xs) =
-  let lhs = [a | a <- xs, a <= p]
-      rhs = [a | a <- xs, a > p]
-  in qs2 lhs ++ [p] ++ qs2 rhs
 
 lhs :: (Ord a) => a -> [a] -> [a]
 --lhs _ [] = []
@@ -67,9 +60,15 @@ lhs :: (Ord a) => a -> [a] -> [a]
 --  | otherwise = lhs p xs
 lhs p xs = [a | a <- xs, a <= p]
 
-
 rhs :: (Ord a) => a -> [a] -> [a]
 -- list comprehension that works as a filter.
 -- Returns every a that is a member of xs and that is greater than p
 -- i.e. filter the list xs according to whether elements satisfy the predicate of being greater than p
 rhs p xs = [ a | a <- xs, a > p]
+
+qs2 :: (Ord a) => [a] -> [a]
+qs2 [] = []
+qs2 (p:xs) =
+  let lhs = [a | a <- xs, a <= p]
+      rhs = [a | a <- xs, a > p]
+  in qs2 lhs ++ [p] ++ qs2 rhs
