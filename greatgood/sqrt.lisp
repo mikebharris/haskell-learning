@@ -1,3 +1,6 @@
+;; redefine operators to be floating point
+(constant '+ add '- sub '* mul '/ div)
+
 (define (square x)
     (* x x))
 (define (average x y)
@@ -9,10 +12,10 @@
 (define (improve guess x)
     (average guess (/ x guess)))
 (define (good-enough? guess x)
-    (< (absolute (- (square guess) x))
+    (< (abs (- (square guess) x))
        .001))
 (define (try guess x)
     (if (good-enough? guess x)
 	guess
 	(try (improve guess x) x)))
-(define (myroot x) (try 1 x))
+(define (myroot x) (try 1.0 x))
