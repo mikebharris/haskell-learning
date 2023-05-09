@@ -12,6 +12,8 @@
 	(- x)
 	x))
 
+;; myroot uses a block structure to encapsulate improve, try, and good-enough?
+;; within it
 (define (myroot x)
     (define (improve g)
         (average g (/ x g)))
