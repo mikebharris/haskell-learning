@@ -59,6 +59,8 @@ lhs :: (Ord a) => a -> [a] -> [a]
 --  | x <= p = x : lhs p xs
 --  | otherwise = lhs p xs
 lhs p xs = [a | a <- xs, a <= p]
+-- in set notation
+-- { a | a E xs, a <= p}
 
 rhs :: (Ord a) => a -> [a] -> [a]
 -- list comprehension that works as a filter.
@@ -72,3 +74,5 @@ qs2 (p:xs) =
   let lhs = [a | a <- xs, a <= p]
       rhs = [a | a <- xs, a > p]
   in qs2 lhs ++ [p] ++ qs2 rhs
+
+  --TODO: Brush up on set theory
