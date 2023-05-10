@@ -34,4 +34,28 @@ isUpperAlpha = (`elem` ['A'..'Z'])
 applyTwice :: (a -> a) -> a -> a
 applyTwice f a = f (f a)
 
+zipWith' :: (a -> b -> c) -> [a] -> [b] -> [c]
+zipWith' _ [] _ = []
+zipWith' _ _ [] = []
+zipWith' f (x:xs) (y:ys) = (f x y):zipWith' f xs ys
+
+zipWith'' :: (a -> b -> c) -> [a] -> [b] -> [c]
+zipWith'' _ [] _ = []
+zipWith'' _ _ [] = []
+zipWith'' f xs ys = [f x y|x <- xs, y <- ys]
+-- the above was a good exploration but it wasn't equivalent as it ends up with a list of 9 items
+
+flip' :: (a -> b -> c) -> (b -> a -> c)
+flip' f = g
+  where g x y = f y x
+
+curriedFlip' :: (a -> b -> c) -> (b -> a -> c)
+curriedFlip' f y x = f x y
+
+-- therefore: flip' (-) 5 1 => -4
+
+
+
+
+
 
