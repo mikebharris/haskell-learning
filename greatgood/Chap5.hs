@@ -54,8 +54,8 @@ curriedFlip' f y x = f x y
 
 -- therefore: flip' (-) 5 1 => -4
 
-
-
+powersOfTwo :: Int -> [Int]
+powersOfTwo n = zipWith' (^) (replicate n 2) [0..]
 
 
 
