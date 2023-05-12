@@ -68,5 +68,7 @@ qs (p:xs) =
       rhs = filter (> p) xs
   in qs lhs ++ [p] ++ qs rhs
 
-someNums = head (let isDivisible x = (mod x 3289 == 0) in filter isDivisible [99999..1])
--- or could be done with a where clause
+someNums = head (let isDivisible x = (mod x 3289 == 0) in filter isDivisible [99999,99998..1])
+-- or could be done with a where clause: 
+someOtherNums = head(filter isDivisible [99999,99998..1])
+  where isDivisible x = (mod x 3289 == 0)
