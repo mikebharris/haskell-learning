@@ -69,6 +69,26 @@ qs (p:xs) =
   in qs lhs ++ [p] ++ qs rhs
 
 someNums = head (let isDivisible x = (mod x 3289 == 0) in filter isDivisible [99999,99998..1])
--- or could be done with a where clause: 
+-- or could be done with a where clause:
 someOtherNums = head(filter isDivisible [99999,99998..1])
   where isDivisible x = (mod x 3289 == 0)
+
+-- any natural
+-- if 1 stop
+-- if even / 2
+-- if odd * 3  + 1
+
+-- for all numbers twixt 1 and 100
+-- how many have a chain of length > 15
+
+chain :: Int -> [Int]
+chain 1 = [1]
+chain n = n:chain (result)
+  where result = if even n
+                 then n `div` 2
+                 else (n * 3 ) + 1
+
+doThing = length [ n | n <- [1..100], length (chain n) > 15 ]
+
+theirThing =  length (filter isLong (map chain [1..100]))
+  where isLong xs = length xs > 15
