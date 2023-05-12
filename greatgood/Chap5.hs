@@ -58,4 +58,15 @@ powersOfTwo :: Int -> [Int]
 powersOfTwo n = zipWith' (^) (replicate n 2) [0..]
 
 
+evenLessThan15 = filter (<15) (filter even [1..20])
+evenLessThan15Lc =  [x | x <- [1..20], x < 15, even x]
 
+qs :: (Ord a) => [a] -> [a]
+qs [] = []
+qs (p:xs) =
+  let lhs = filter (<= p) xs
+      rhs = filter (> p) xs
+  in qs lhs ++ [p] ++ qs rhs
+
+someNums = head (let isDivisible x = (mod x 3289 == 0) in filter isDivisible [99999..1])
+-- or could be done with a where clause
