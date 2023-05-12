@@ -68,6 +68,7 @@ qs (p:xs) =
       rhs = filter (> p) xs
   in qs lhs ++ [p] ++ qs rhs
 
+<<<<<<< Updated upstream
 someNums = head (let isDivisible x = (mod x 3289 == 0) in filter isDivisible [99999,99998..1])
 -- or could be done with a where clause:
 someOtherNums = head(filter isDivisible [99999,99998..1])
@@ -92,22 +93,10 @@ doThing = length [ n | n <- [1..100], length (chain n) > 15 ]
 
 theirThing =  length (filter isLong (map chain [1..100]))
   where isLong xs = length xs > 15
+=======
+someNums = head (let isDivisible x = (mod x 3289 == 0) in filter isDivisible [99999..1])
+-- or could be done with a where clause
 
-theirThing' = length (filter (\xs -> length xs > 15) (map chain [1..100]))
-
-listOfFuns :: (Num a, Enum a) => [a -> a]
-listOfFuns = map (*) [0..]
-
-addThree :: Int -> Int -> Int -> Int
-addThree x y z = x + y + z
-
-addThree' :: Int -> Int -> Int -> Int
-addThree' = \x -> \y -> \z -> x + y + z
-
-sum' :: (Num a) => [a] -> a
-sum' = foldl (+) 0
-
-conc :: [[Char]] -> [Char]
-conc = foldl (++) []
-
-
+-- Sum of all the odd squares below 10000
+--sum (takeWhile (< 10000) [x * x | x <- [1..], odd x] )
+>>>>>>> Stashed changes
