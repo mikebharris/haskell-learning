@@ -36,7 +36,16 @@ You may use Google or another search engine to find reference resources for Hask
 To get it running you will need to do (Linux, macOS and Cygwin):
 ```shell
 cabal update && cabal install --package-env=. --lib hspec hspec-contrib QuickCheck HUnit
-runhaskell Spec.hs
+```
+
+To get 'cabal' you'll need to install [ghcup](https://www.haskell.org/ghcup/) by doing:
+```shell
+curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
+```
+
+Or install the package with your package manager, such as macOS:
+```shell
+brew install ghcup
 ```
 
 ## Hints
