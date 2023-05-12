@@ -110,4 +110,7 @@ sum' = foldl (+) 0
 conc :: [[Char]] -> [Char]
 conc = foldl (++) []
 
-
+fib :: Int -> Int
+fib n
+  | n < 2 = n
+  | otherwise = n + fib (n - 1)
