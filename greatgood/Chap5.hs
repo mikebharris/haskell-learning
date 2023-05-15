@@ -119,9 +119,11 @@ fib n
   | otherwise = n + fib (n - 1)
 
 
-  foldr k z = go
-  	  where
-  	    go []     = z
-  	    go (y:ys) = y `k` (go ys)
+--  foldr k z = go
+--  	  where
+--  	    go []     = z
+--  	    go (y:ys) = y `k` (go ys)
 
--- first time round: y = 1, y `k` (go ys) = y + 3 
+-- using foldr (\x _ -> x+3) 0 [7..]
+-- first time round: y = 7, 7 `(\x _ -> x)` (go [2..]) => 7 + 3 => 10
+-- ends
