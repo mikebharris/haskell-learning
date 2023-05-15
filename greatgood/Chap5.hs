@@ -117,3 +117,11 @@ fib :: Int -> Int
 fib n
   | n < 2 = n
   | otherwise = n + fib (n - 1)
+
+
+  foldr k z = go
+  	  where
+  	    go []     = z
+  	    go (y:ys) = y `k` (go ys)
+
+-- first time round: y = 1, y `k` (go ys) = y + 3 
