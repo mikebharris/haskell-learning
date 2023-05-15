@@ -108,7 +108,10 @@ sum' :: (Num a) => [a] -> a
 sum' = foldl (+) 0
 
 conc :: [[Char]] -> [Char]
-conc = foldl (++) []
+conc = foldl (++) "rabbit"
+--
+rconc :: [[Char]] -> [Char]
+rconc = foldr (++) "wabbit"
 
 fib :: Int -> Int
 fib n
