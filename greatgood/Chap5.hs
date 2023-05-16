@@ -127,3 +127,14 @@ fib n
 -- using foldr (\x _ -> x+3) 0 [7..]
 -- first time round: y = 7, 7 `(\x _ -> x)` (go [2..]) => 7 + 3 => 10
 -- ends
+
+maximum' :: (Ord a) => [a] -> a
+maximum' = foldl1 max
+
+foldl2 f z = go
+    where
+      go []     = z
+      go (y:[]) = z `f` y
+      go (x:y:[]) = z `f` (x `f` y)
+      go (x:y:q:[]) = z `f` (x `f` (y `f` q))
+      --go (y:ys) = y `f` (go ys)
