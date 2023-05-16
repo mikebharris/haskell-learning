@@ -6,3 +6,5 @@ module Planner
     
     fastestTrain :: [[String]] -> String -> String -> String
     fastestTrain timetable startStationName endStationName = "1357"
+
+    trains = [[ timetable !! 0, timetable !! n] | n <- [1..3]]

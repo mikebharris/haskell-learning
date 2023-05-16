@@ -131,10 +131,11 @@ fib n
 maximum' :: (Ord a) => [a] -> a
 maximum' = foldl1 max
 
-foldl2 f z = go
-    where
-      go []     = z
-      go (y:[]) = z `f` y
-      go (x:y:[]) = z `f` (x `f` y)
-      go (x:y:q:[]) = z `f` (x `f` (y `f` q))
-      --go (y:ys) = y `f` (go ys)
+--foldl2 :: (a -> a -> a) -> a -> [a] -> a
+--foldl2 f acc xs = f acc (go xs)
+--    where
+--      go f acc []     = acc
+--      go f acc (y:ys) = foldl2 `f` (go ys)
+
+foldl3 fn acc [] = acc
+foldl3 fn acc (x:xs) = foldl3 fn (fn acc x) xs
