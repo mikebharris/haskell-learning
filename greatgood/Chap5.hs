@@ -116,7 +116,7 @@ rconc = foldr (++) "wabbit"
 fib :: Int -> Int
 fib n
   | n < 2 = n
-  | otherwise = n + fib (n - 1)
+  | otherwise = fib (n - 1) + fib (n - 2)
 
 
 --  foldr k z = go
@@ -137,5 +137,5 @@ maximum' = foldl1 max
 --      go f acc []     = acc
 --      go f acc (y:ys) = foldl2 `f` (go ys)
 
-foldl3 fn acc [] = acc
-foldl3 fn acc (x:xs) = foldl3 fn (fn acc x) xs
+--foldl3 fn acc [] = acc
+--foldl3 fn acc (x:xs) = foldl3 fn (fn acc x)
