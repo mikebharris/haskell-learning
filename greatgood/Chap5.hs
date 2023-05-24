@@ -139,3 +139,9 @@ maximum' = foldl1 max
 
 --foldl3 fn acc [] = acc
 --foldl3 fn acc (x:xs) = foldl3 fn (fn acc x)
+
+reverse' :: [a] -> [a]
+reverse' = foldl (\accs y -> y : accs) []
+
+filter' :: (a -> Bool) -> [a] -> [a]
+filter' p = foldr (\x acc -> if (p x) then x : acc else acc) []
