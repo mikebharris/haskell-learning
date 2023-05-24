@@ -145,3 +145,16 @@ reverse' = foldl (\accs y -> y : accs) []
 
 filter' :: (a -> Bool) -> [a] -> [a]
 filter' p = foldr (\x acc -> if (p x) then x : acc else acc) []
+
+and' :: [Bool] -> Bool
+and' xs = foldr (&&) True xs
+
+-- how many elements before the (sum of sqrts of natural numbers) > 1000?
+thingy :: [Float]
+thingy = takeWhile (<=1000) (scanl1 (+) [(sqrt a) | a <- [1..]])
+
+eighty :: Int
+eighty = sum $ filter (>10) $ map (*2) [2..10] --  sum (filter (>10) (map (*2) [2..10]))
+
+wibble :: Floating a => a -> [a]
+wibble a = map ($ a) [(4+), sqrt]
