@@ -20,7 +20,7 @@ r2 = multTwoWithNine 2 3
 compWithHundred :: Int -> Ordering
 --compWithHundred x = compare 100 x
 -- is equivalent to, the x's are on both sides and can be cancelled out
-compWithHundred = compare 100
+compWithHundred x = compare x 100
 
 divideByTen :: (Floating a) => a -> a
 divideByTen = (/10)
@@ -28,9 +28,14 @@ divideByTen = (/10)
 divideTenBy :: (Floating a) => a -> a
 divideTenBy = (10/)
 
+-- the brackets turn the infix into a prefix function that takes the parameters in a different order
+-- (`elem` ['A'..'Z']) is equivalent to \x -> elem x ['A'..'Z']
 isUpperAlpha :: Char -> Bool
 isUpperAlpha = (`elem` ['A'..'Z'])
 
+-- applyTwice (*3) 2 => 18
+-- applyTwice (3-) 2 => 2
+-- applyTwice (subtract 3) 2 => -4
 applyTwice :: (a -> a) -> a -> a
 applyTwice f a = f (f a)
 
@@ -49,6 +54,7 @@ flip' :: (a -> b -> c) -> (b -> a -> c)
 flip' f = g
   where g x y = f y x
 
+-- flipminus = curriedFlip' (-) 
 curriedFlip' :: (a -> b -> c) -> (b -> a -> c)
 curriedFlip' f y x = f x y
 
@@ -94,7 +100,9 @@ theirThing =  length (filter isLong (map chain [1..100]))
   where isLong xs = length xs > 15
 
 theirThing' = length (filter (\xs -> length xs > 15) (map chain [1..100]))
+theirThingWithFunctionComposition =  length . filter (\xs -> length xs > 15) $ map chain [1..100]
 
+-- zipWith' ($) listOfFuns  [1,2,3] => [0,2,6]
 listOfFuns :: (Num a, Enum a) => [a -> a]
 listOfFuns = map (*) [0..]
 
@@ -112,6 +120,24 @@ conc = foldl (++) "rabbit"
 --
 rconc :: [[Char]] -> [Char]
 rconc = foldr (++) "wabbit"
+
+surround x y =  x ++ y ++ x
+concL = foldl surround "rabbit"
+-- concL ["bob","joe","maisie"]
+-- "rabbitbobrabbitjoerabbitbobrabbitmaisierabbitbobrabbitjoerabbitbobrabbit"
+concR = foldr surround "rabbit"
+-- concR ["bob","joe","maisie"]
+-- "bobjoemaisierabbitmaisiejoebob"
+
+-- ghci> foldr (-) 1 [0,2,3,4] 
+-- -2
+-- ghci> foldr1 (-) [0,2,3,4,1]
+-- -2
+
+-- ghci> scanr1 (-) [0,2,3,4,1]
+-- [-2,2,0,3,1]
+-- ghci> scanl1 (-) [0,2,3,4,1]
+-- [0,-2,-5,-9,-10]
 
 fib :: Int -> Int
 fib n
@@ -153,8 +179,17 @@ and' xs = foldr (&&) True xs
 thingy :: [Float]
 thingy = takeWhile (<=1000) (scanl1 (+) [(sqrt a) | a <- [1..]])
 
+-- pg 81:
 eighty :: Int
 eighty = sum $ filter (>10) $ map (*2) [2..10] --  sum (filter (>10) (map (*2) [2..10]))
 
 wibble :: Floating a => a -> [a]
 wibble a = map ($ a) [(4+), sqrt]
+
+--pg 82: function composition
+-- (.) :: (b -> c) -> (a -> b) -> a -> c
+-- therefore (negate . abs) = (\x -> negate(abs x))
+
+oddSquareSum :: Integer
+oddSquareSum = sum (takeWhile (<10000) (filter odd (map (^2) [1..])))
+oddSquareSum' = sum . takeWhile (<10000) . filter odd $ map (^2) [1..]
