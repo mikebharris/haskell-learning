@@ -129,8 +129,24 @@ concR = foldr surround "rabbit"
 -- concR ["bob","joe","maisie"]
 -- "bobjoemaisierabbitmaisiejoebob"
 
--- ghci> foldr (-) 1 [0,2,3,4] 
--- -2
+-- for foldr we take the list right to left
+-- and at each iteration subtract the accumulator from x
+-- ghci> foldr (-) 1 [0,2,3,4]
+-- 4-1 = 3 
+-- 3-3 = 0
+-- 2-0 = 2 
+-- 0-2 = -2
+
+-- foldr :: (a -> b -> b) -> b -> [a] -> b
+-- foldr f z []     = z
+-- foldr f z (x:xs) = f x (foldr f z xs)
+-- foldr (-) 1 [0,2,3,4] = (-) 0 (foldr (-) 1 [2,3,4])
+-- (-) 0 ((-) 2 (foldr (-) 1 [3,4]))
+-- (-) 0 ((-) 2 ((-) 3 (foldr (-) 1 [4])))
+-- (-) 0 ((-) 2 ((-) 3 ((-) 4 (foldr (-) 1 []))))
+-- (-) 0 ((-) 2 ((-) 3 ((-) 4 (1))))
+
+
 -- ghci> foldr1 (-) [0,2,3,4,1]
 -- -2
 
