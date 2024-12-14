@@ -1,16 +1,19 @@
 package main
 
+// Go example using generics and type constraints
+
 import (
 	"fmt"
 	"math"
 	"reflect"
 )
 
-// define
+// a type constraint
 type number interface {
 	int | int8 | int16 | int32 | int64 | float32 | float64 | complex64 | complex128
 }
 
+// a generic type
 type tuple[N number] struct {
 	a, b N
 }
@@ -23,8 +26,9 @@ func add2together[N number](a, b N) N {
 	return a + b
 }
 
+// a generic function taking two generic types
 func addTupleTogether[N number](t tuple[N]) N {
-	return t.a + t.b
+	return add2together(t.a, t.b)
 }
 
 func main() {
@@ -82,6 +86,7 @@ func (p journalPayload) process() {
 func (p submissionPayload) process() {
 	fmt.Println("processing the submission payload")
 }
+
 func process[P payload](p P) {
 	fmt.Printf("processing the %s\n", reflect.TypeOf(p).Name())
 	p.process()
