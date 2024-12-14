@@ -1,6 +1,4 @@
-import Data.Complex (Complex)
-import Data.ByteString (intercalate)
-import qualified Data.ByteString as Data.List
+import Data.List
 doubleSmallNumber :: Int -> Int
 doubleSmallNumber x =
   if x > 100
@@ -80,12 +78,15 @@ buzzFizz = [ fb x |  x <- [1 .. 100]]
 -- and if the result tends to infinity it is unstable and outside the set (Z > some threshold, say 10,000)
 -- and if the result tends to zero it is stable and inside the set (maxiters exceeded after n iterations)
 
-plottedMset :: Double -> Double -> Data.List.ByteString
-plottedMset xRes yRes = intercalate '' [ toChar p | p <- mandelbrot xRes yRes] where
-  toChar (6.0, _, True) = "\n*"
-  toChar (6.0, _, False) = "\n."
-  toChar (_, _, True) = "*"
-  toChar _ = "."
+
+
+
+plottedMset :: Double -> Double -> String
+plottedMset xRes yRes = intercalate "" [ toString p | p <- mandelbrot xRes yRes] where
+  toString (6.0, _, True) = "\n*"
+  toString (6.0, _, False) = "\n."
+  toString (_, _, True) = "*"
+  toString _ = "."
 
 mandelbrot :: Double -> Double -> [(Double, Double, Bool)]
 mandelbrot xRes yRes = [(x, y, mSetCompute (xMin + (xStep * x)) (yMin + (yStep * y))) | y <- [1..yRes], x <- [1..xRes]]
