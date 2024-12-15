@@ -83,20 +83,26 @@ buzzFizz = [ fb x |  x <- [1 .. 100]]
 
 plottedMset :: Double -> Double -> String
 plottedMset xRes yRes = intercalate "" [ toString p | p <- mandelbrot xRes yRes] where
-  toString (6.0, _, True) = "\n*"
-  toString (6.0, _, False) = "\n."
+  toString (1.0, _, True) = "\n*"
+  toString (1.0, _, False) = "\n."
   toString (_, _, True) = "*"
   toString _ = "."
 
+
+-- Takes x resolution and y resolution, and returns a tuple for each point
+-- i.e. (xCoord, yCoord, InOrOutOfSet)
+-- The two dimensional graph represents the complex plane (x for real, y for imnaginary)
 mandelbrot :: Double -> Double -> [(Double, Double, Bool)]
-mandelbrot xRes yRes = [(x, y, mSetCompute (xMin + (xStep * x)) (yMin + (yStep * y))) | y <- [1..yRes], x <- [1..xRes]]
+mandelbrot xRes yRes = [(x, y, mSetCompute (realPart x) (imaginaryPart y)) | y <- [1..yRes], x <- [1..xRes]]
   where
-    xStep = abs (xMax - xMin) / xRes
-    yStep = abs (yMax - yMin) / yRes
-    xMax = 0.8
-    xMin = -2.5
-    yMax = 1.25
-    yMin = -1.25
+    xMax = 0.8 -- rightmost end of the area covered by the set (with a bit of padding)
+    xMin = -2.5 -- leftmost
+    yMax = 1.25 -- top
+    yMin = -1.25 -- bottom
+    xStep = abs (xMax - xMin) / xRes -- the distance along the x axis covered by each pixel (i.e. how wide a pixel is)
+    yStep = abs (yMax - yMin) / yRes -- ditto y axis
+    realPart x = xMin + (xStep * x) -- the real component of the point on the complex plane 
+    imaginaryPart y = yMin + (yStep * y) -- the imaginary compoenent
 
 mSetCompute :: Double -> Double -> Bool
 mSetCompute = mSetIterate iters zReal zImaginary
@@ -105,14 +111,20 @@ mSetCompute = mSetIterate iters zReal zImaginary
     zImaginary = 0
     iters = 0
 
+-- For each point c on the complex plane, we do a certain number of iterations of z = z^2 + c
+-- to see if z will tend towards infinity or not.
+-- if z reaches the threshold then we assume it is on its way to infinity (and therefore not in the mandelbrot set)
+-- Otherwise we assume it is not going towards infinity & is therefore in the set.
 mSetIterate :: Int -> Double -> Double -> Double -> Double -> Bool
-mSetIterate iters zR zI cR cI 
-  | zR^2 + zI^2 > threshold = False 
-  | iters > maxIters = True
-  | otherwise = mSetIterate (iters+1) (zR^2 - zI^2 + cR) (2 * zR * zI + cI) cR cI
+mSetIterate iters zReal zImaginary cReal cImaginary 
+  | zReal^2 + zImaginary^2 > threshold = False -- the threshold has been reached indicating that z is tending towards infinity so c is not in the set
+  | iters > maxIters = True -- it hasn't reached the threshold before max iterations
+  | otherwise = mSetIterate (iters+1) newZReal newZImaginary cReal cImaginary -- move on to the next iteration
   where
     maxIters = 100
     threshold = 10000
+    newZReal = zReal^2 - zImaginary^2 + cReal -- calculation of z = z^2 + c for the real component of z
+    newZImaginary = 2 * zReal * zImaginary + cImaginary -- calculation of z = z^2 + c for the imaginary component of z
 
 
 -- is there a complex type in Haskell, do we write our own here, or just break into the a + ib parts?
