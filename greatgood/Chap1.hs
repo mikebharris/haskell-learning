@@ -101,8 +101,8 @@ mandelbrot xRes yRes (AxisSection xMin xMax) (AxisSection yMin yMax) = [(x, y, m
     -- yMax = 1.25 -- top
     xStep = abs (xMax - xMin) / xRes -- the distance along the x axis covered by each pixel (i.e. how wide a pixel is)
     yStep = abs (yMax - yMin) / yRes -- ditto y axis
-    realPart x = xMin + (xStep * x) -- the real component of the point on the complex plane 
-    imaginaryPart y = yMin + (yStep * y) -- the imaginary compoenent
+    realPart x = xMin + (xStep * x) -- the real component of the point on the complex plane coresponding to the point (x,y)
+    imaginaryPart y = yMin + (yStep * y) -- the imaginary component of said point
 
 mSetCompute :: Double -> Double -> Bool
 mSetCompute = mSetIterate iters zReal zImaginary
