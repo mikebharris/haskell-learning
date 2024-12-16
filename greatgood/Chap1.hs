@@ -79,10 +79,10 @@ buzzFizz = [ fb x |  x <- [1 .. 100]]
 -- and if the result tends to zero it is stable and inside the set (maxiters exceeded after n iterations)
 
 
+data AxisSection = AxisSection Double Double deriving Show
 
-
-plottedMset :: Double -> Double -> String
-plottedMset xRes yRes = intercalate "" [ toString p | p <- mandelbrot xRes yRes] where
+plottedMset :: Double -> Double -> AxisSection -> AxisSection -> String
+plottedMset xRes yRes xSection ySection = intercalate "" [ toString p | p <- mandelbrot xRes yRes xSection ySection] where
   toString (1.0, _, True) = "\n*"
   toString (1.0, _, False) = "\n."
   toString (_, _, True) = "*"
@@ -92,13 +92,13 @@ plottedMset xRes yRes = intercalate "" [ toString p | p <- mandelbrot xRes yRes]
 -- Takes x resolution and y resolution, and returns a tuple for each point
 -- i.e. (xCoord, yCoord, InOrOutOfSet)
 -- The two dimensional graph represents the complex plane (x for real, y for imnaginary)
-mandelbrot :: Double -> Double -> [(Double, Double, Bool)]
-mandelbrot xRes yRes = [(x, y, mSetCompute (realPart x) (imaginaryPart y)) | y <- [1..yRes], x <- [1..xRes]]
+mandelbrot :: Double -> Double -> AxisSection -> AxisSection -> [(Double, Double, Bool)]
+mandelbrot xRes yRes (AxisSection xMin xMax) (AxisSection yMin yMax) = [(x, y, mSetCompute (realPart x) (imaginaryPart y)) | y <- [1..yRes], x <- [1..xRes]]
   where
-    xMax = 0.8 -- rightmost end of the area covered by the set (with a bit of padding)
-    xMin = -2.5 -- leftmost
-    yMax = 1.25 -- top
-    yMin = -1.25 -- bottom
+    -- xMin = -2.5 -- leftmost
+    -- xMax = 0.8 -- rightmost end of the area covered by the set (with a bit of padding)
+    -- yMin = -1.25 -- bottom
+    -- yMax = 1.25 -- top
     xStep = abs (xMax - xMin) / xRes -- the distance along the x axis covered by each pixel (i.e. how wide a pixel is)
     yStep = abs (yMax - yMin) / yRes -- ditto y axis
     realPart x = xMin + (xStep * x) -- the real component of the point on the complex plane 
