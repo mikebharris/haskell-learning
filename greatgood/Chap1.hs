@@ -1,6 +1,6 @@
 import Data.List
 import Data.Complex
-import qualified Graphics.Image as G
+-- import qualified Graphics.Image as G
 
 
 doubleSmallNumber :: Int -> Int
