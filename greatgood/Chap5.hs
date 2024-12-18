@@ -64,11 +64,15 @@ powersOfTwo :: Int -> [Int]
 powersOfTwo n = zipWith' (^) (replicate n 2) [0..]
 
 
+evenLessThan15 :: [Integer]
 evenLessThan15 = filter (<15) (filter even [1..20])
+
+evenLessThan15Lc :: [Integer]
 evenLessThan15Lc =  [x | x <- [1..20], x < 15, even x]
 
 qs :: (Ord a) => [a] -> [a]
 qs [] = []
+qs [x] = [x]
 qs (p:xs) =
   let lhs = filter (<= p) xs
       rhs = filter (> p) xs
@@ -77,7 +81,7 @@ qs (p:xs) =
 someNums = head (let isDivisible x = (mod x 3289 == 0) in filter isDivisible [99999,99998..1])
 -- or could be done with a where clause:
 someOtherNums = head(filter isDivisible [99999,99998..1])
-  where isDivisible x = (mod x 3289 == 0)
+  where isDivisible x = mod x 3289 == 0
 
 -- any natural
 -- if 1 stop
@@ -121,11 +125,14 @@ conc = foldl (++) "rabbit"
 rconc :: [[Char]] -> [Char]
 rconc = foldr (++) "wabbit"
 
+surround :: [a] -> [a] -> [a]
 surround x y =  x ++ y ++ x
-concL = foldl surround "rabbit"
+
+-- concL = foldl surround "rabbit"
 -- concL ["bob","joe","maisie"]
 -- "rabbitbobrabbitjoerabbitbobrabbitmaisierabbitbobrabbitjoerabbitbobrabbit"
-concR = foldr surround "rabbit"
+
+-- concR = foldr surround "rabbit"
 -- concR ["bob","joe","maisie"]
 -- "bobjoemaisierabbitmaisiejoebob"
 
@@ -209,3 +216,5 @@ wibble a = map ($ a) [(4+), sqrt]
 oddSquareSum :: Integer
 oddSquareSum = sum (takeWhile (<10000) (filter odd (map (^2) [1..])))
 oddSquareSum' = sum . takeWhile (<10000) . filter odd $ map (^2) [1..]
+
+rabbitter s = foldl surround "rabbit"
