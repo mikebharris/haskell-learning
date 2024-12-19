@@ -1,6 +1,7 @@
 module TrainPlanner
   where
     import Data.Time
+    -- import Data.List (elemIndex) -- considered using this but it returns a Maybe and I can't use that as an index.
 
     -- duration timetable "0907" "Camborne" "Exeter St Davids" == 150 : PASS
     -- duration timetable "1023" "Camborne" "Exeter St Davids" == 159 : PASS
@@ -38,7 +39,6 @@ module TrainPlanner
       today = fromGregorian 2023 05 16
       hh = read (take 2 t) :: Int
       mm = read (drop 2 t) :: Int
-
 
     fastestTrain :: [[String]] -> String -> String -> String
     fastestTrain a b c = "1357"
