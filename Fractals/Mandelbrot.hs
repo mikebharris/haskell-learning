@@ -1,3 +1,4 @@
+
 import Data.List
 import Data.Complex
 -- import qualified Graphics.Image as G
