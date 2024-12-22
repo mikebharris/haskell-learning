@@ -31,6 +31,6 @@ infiniteDots = ["." | _ <- [0..]]
 -- with the suffixing of the dot within the Lambda we then can't tell if there's anything else in the list result of words
 -- this solution sends the result into a function that strips off any whitespace at the end of a string
 initialsWithDotsAndNoTrailingSpace :: String -> String
-initialsWithDotsAndNoTrailingSpace n = dropWhileEnd isSpace $ foldl (\acc (x:xs) -> acc ++ [x] ++ ". ") "" (words n)
+initialsWithDotsAndNoTrailingSpace name = dropWhileEnd isSpace $ foldl (\acc (x:xs) -> acc ++ [x] ++ ". ") "" (words name)
 
 -- but is there a more elegant "Haskelly" way of doing it?
