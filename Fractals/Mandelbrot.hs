@@ -60,7 +60,7 @@ mSetCompute = mSetIterate iters z
 -- Otherwise we assume it is not going towards infinity & is therefore in the set.
 mSetIterate :: Int -> Complex Double -> Complex Double -> Bool
 mSetIterate iters z c
-  | realPart z^2 + imagPart z^2 > threshold = False -- the threshold has been reached indicating that z is tending towards infinity so c is not in the set
+  | (realPart z)^2 + (imagPart z)^2 > threshold = False -- the threshold has been reached indicating that z is tending towards infinity so c is not in the set
   | iters > maxIters = True -- it hasn't reached the threshold before max iterations
   | otherwise = mSetIterate (iters+1) newZ c -- move on to the next iteration
   where
