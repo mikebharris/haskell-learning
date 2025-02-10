@@ -3,6 +3,11 @@
 import Data.List
 import Data.Char
 import qualified Data.Map as Map
+import qualified Data.Set as Set
+import Geometry
+import Geometry.Sphere
+import qualified Geometry.Cube as Cube
+
 
 numuniques :: (Eq a) => [a] -> Int
 numuniques = length . nub
@@ -66,7 +71,15 @@ fromList' = foldl (\acc (k, v) -> Map.insert k v acc) Map.empty
 fromListR :: (Ord k) => [(k,v)] -> Map.Map k v
 fromListR = foldr (\(k, v) acc -> Map.insert k v acc) Map.empty
 
---- Finished  Data.Map section 
---- Go to https://learnyouahaskell.com/modules#data-set
+---- DATA.SET https://learnyouahaskell.com/modules#data-set
+
+
+text1 = "I just had an anime dream. Anime... Reality... Are they so different?"
+text2 = "The old man left his garbage can out and now his trash is all over my lawn!"
+
+set1 = Set.fromList text1
+set2 = Set.fromList text2
+
+
 
 
