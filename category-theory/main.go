@@ -61,4 +61,22 @@ func main() {
 	fmt.Println("Memoized call 4:", memorizedSeed(120))
 
 	fmt.Println(f44())
+
+	fmt.Println("**** Kleisi ****")
+	fmt.Println("root 2: ", safe_root(2))
+	fmt.Println("root -1: ", safe_root(-1))
+	fmt.Println("reciprocal 2: ", safe_reciprocal(float32(2)))
+	fmt.Println("reciprocal 0: ", safe_reciprocal(0))
+
+	fmt.Println("stringthing 2: ", safe_stringthing(2))
+	fmt.Println("stringthing 0: ", safe_stringthing(0))
+
+	safe_root_reciprocal := fish(safe_root, safe_reciprocal)
+	fmt.Println("srr 2: ", safe_root_reciprocal(2))
+	fmt.Println("srr .5: ", safe_root_reciprocal(0.5))
+	fmt.Println("srr -1: ", safe_root_reciprocal(-1))
+
+	safe_foo := fish(safe_root_reciprocal, safe_stringthing)
+	fmt.Println("string foo: ", *safe_foo(1).v)
+	fmt.Println("string foo: ", safe_foo(1).b)
 }
