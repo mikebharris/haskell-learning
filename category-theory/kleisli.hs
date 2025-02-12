@@ -13,11 +13,11 @@ safeRecip x
 id :: a -> Opt a
 id x = (x, True)
 
-(>=>) ::  (Num a, Num b, Num c) => (a -> Opt b) -> (b -> Opt c) -> (a -> Opt c)
-f1 >=> f2 = \x ->
+(<=<) ::  (Num a, Num b, Num c) => (a -> Opt b) -> (b -> Opt c) -> (a -> Opt c)
+f1 <=< f2 = \x ->
     let (val1, bool1) = f1 x
         (val2, bool2) = if bool1 then f2 val1 else (0, False)
     in (val2, bool2)
 
-safeRR = safeRoot >=> safeRecip
+safeRR = safeRoot <=< safeRecip
 

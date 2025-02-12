@@ -11,7 +11,7 @@ func idk[A any](a A) []A {
 	return []A{a}
 }
 
-func fish[A any, B any, C any](f func(A) Opt[B], g func(B) Opt[C]) func(A) Opt[C] {
+func fishopt[A any, B any, C any](f func(A) Opt[B], g func(B) Opt[C]) func(A) Opt[C] {
 	return func(a A) Opt[C] {
 		o1 := f(a)
 		if !o1.b {
@@ -21,7 +21,7 @@ func fish[A any, B any, C any](f func(A) Opt[B], g func(B) Opt[C]) func(A) Opt[C
 	}
 }
 
-func fishopt[A any, B any, C any](f func(A) []B, g func(B) []C) func(A) []C {
+func fish[A any, B any, C any](f func(A) []B, g func(B) []C) func(A) []C {
 	return func(a A) []C {
 		o1 := f(a)
 		if len(o1) == 0 {
