@@ -77,6 +77,5 @@ func main() {
 	fmt.Println("srr -1: ", safe_root_reciprocal(-1))
 
 	safe_foo := fish(safe_root_reciprocal, safe_stringthing)
-	fmt.Println("string foo: ", *safe_foo(1).v)
-	fmt.Println("string foo: ", safe_foo(1).b)
+	fmt.Println("string foo: ", *safe_foo(1)[0])
 }

@@ -7,8 +7,8 @@ type Opt[T any] struct {
 	b bool
 }
 
-func idk[A any](a A) Opt[A] {
-	return Opt[A]{a, true}
+func idk[A any](a A) []A {
+	return []A{a}
 }
 
 func fish[A any, B any, C any](f func(A) Opt[B], g func(B) Opt[C]) func(A) Opt[C] {
@@ -21,26 +21,36 @@ func fish[A any, B any, C any](f func(A) Opt[B], g func(B) Opt[C]) func(A) Opt[C
 	}
 }
 
-func safe_root(x float32) Opt[float32] {
+func fishopt[A any, B any, C any](f func(A) []B, g func(B) []C) func(A) []C {
+	return func(a A) []C {
+		o1 := f(a)
+		if len(o1) == 0 {
+			return []C{}
+		}
+		return g(o1[0])
+	}
+}
+
+func safe_root(x float32) []float32 {
 	if x >= 0 {
-		return Opt[float32]{float32(math.Sqrt(float64(x))), true}
+		return []float32{float32(math.Sqrt(float64(x)))}
 	} else {
-		return Opt[float32]{b: false}
+		return []float32{}
 	}
 }
 
-func safe_reciprocal(x float32) Opt[float32] {
+func safe_reciprocal(x float32) []float32 {
 	if x == 0 {
-		return Opt[float32]{b: false}
+		return []float32{}
 	} else {
-		return Opt[float32]{1 / x, true}
+		return []float32{1 / x}
 	}
 }
 
-func safe_stringthing(x float32) Opt[*string] {
+func safe_stringthing(x float32) []*string {
 	if x == 0 {
-		return Opt[*string]{b: false}
+		return []*string{}
 	}
 	m := "hello"
-	return Opt[*string]{&m, true}
+	return []*string{&m}
 }
