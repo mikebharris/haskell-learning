@@ -1,5 +1,9 @@
+-- {-# LANGUAGE DatatypeContexts #-}
+
 module Shapes
 ( Shape, area, nudge, zeroCircle, zeroRect, Baz(..)) where
+
+    import Data.Map
 
     data Baz b = Foo | Bar b
 
@@ -10,7 +14,7 @@ module Shapes
     area (Circle _ r) = pi * r * r
     area (Rectangle (Point x1 y1) (Point x2 y2)) = abs (x2 - x1) * abs (y2 - y1)
 
-    concentricCircles = map (Circle (Point 0 0)) [1, 2, 3, 4]
+    concentricCircles = Prelude.map (Circle (Point 0 0)) [1, 2, 3, 4]
 
     -- shape, amount to move on x, on y, returns new shape
 
@@ -47,9 +51,42 @@ module Shapes
         flavor:: String
     } deriving Show
 
-    data Car = Car { make :: String, model :: String, year :: Int} deriving (Show)
+    type Make = String
+    type Model = String
+    type Year = Int
+    type Wibble = Thing Int
+
+    type Jalloppy = (Make, Model)
+
+    data Car = Car { make :: Make, model :: Model, year :: Year, wibble :: Wibble} deriving (Show, Eq, Read)
     tellCar :: Car -> String
     tellCar (Car {make = a, model = b, year = c}) = "This car is a " ++ a ++ " " ++ b ++ " made in " ++ show c
 
-    -- data (Ord a) => Thing a = Hand a | Foot
+    -- In "data (Ord a) => Thing a = Hand a | Foot" - (Ord a) is a "type class constraint"
     -- page ??? what the fuck is he talking about?
+
+    -- data (Num a) => Thing a = Hand a | Foot
+    data Thing a = Hand a | Foot deriving (Show, Eq, Read, Ord)
+
+    somefunc :: (Thing Int) -> (Thing Int) -> Int
+    somefunc (Hand t) (Hand r) = t * r
+
+    -- someotherfunc (Hand t) (Hand r) = t : ' ' : r : ""
+
+    data Vector a = Vector a a a deriving (Show)
+    vplus :: (Num a) => Vector a -> Vector a -> Vector a
+    vplus (Vector i j k) (Vector l m n) = Vector (i+l) (j+m) (k+n)
+
+    vproduct :: (Num a) => Vector a -> Vector a -> Vector a
+    vproduct (Vector i j k) (Vector l m n) = Vector (i*l) (j*m) (k*n)
+
+    vsproduct :: (Num a) => Vector a -> a -> Vector a
+    vsproduct (Vector i j k) x = Vector (i*x) (j*x) (k*x)
+
+    mysteryJalloppy = "Car { make=\"Fiat\", model=\"Uno\", year=1991, wibble=(Hand 23) }"
+
+    data Day = Monday | Tuesday | Wednesday | Thursday | Friday | Saturday | Sunday deriving (Enum, Bounded, Eq, Ord, Show, Read)
+
+    type AL k v = [(k, v)]
+
+    type IntMap = Map Int
