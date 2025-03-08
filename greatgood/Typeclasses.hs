@@ -4,7 +4,7 @@ module Shapes
 ( Shape, area, nudge, zeroCircle, zeroRect, Baz(..)) where
 
     import Data.Map
-
+    
     data Baz b = Foo | Bar b
 
     data Point = Point Float Float deriving (Show)
@@ -90,3 +90,51 @@ module Shapes
     type AL k v = [(k, v)]
 
     type IntMap = Map Int
+
+    silly :: a -> Bool
+    sillier :: a -> Bool
+    silly a = not $ sillier a
+    sillier a = not $ silly a
+
+    data TrafficLight = Red | Yellow | Green
+    
+    instance Eq TrafficLight where
+        Red == Red = True
+        Green == Green = True
+        Yellow == Yellow = True
+        _ == _ = False
+
+    class Foo a where
+        bar :: a -> a
+        bar a = a 
+
+    instance Foo TrafficLight where
+        bar a = Red
+
+    instance Show TrafficLight where
+        show Red = "Stop!"
+        show Green = "Go!"
+        show Yellow = "Quick!"
+    
+    class (Num a) => Bar a where
+        baz :: a -> a
+        baz a = a + 2 
+
+    instance Bar Int
+
+    instance Foo (Maybe TrafficLight) where
+        bar Nothing = Nothing
+        bar (Just Red) = Just Green
+        bar (Just x) = Just x
+
+    data Perhaps a = Nowt | Owt a 
+
+    instance (Eq m) => Eq (Perhaps m) where
+        (==) :: Eq m => Perhaps m -> Perhaps m -> Bool
+        (==) Nowt Nowt = True
+        (==) (Owt x) (Owt y) = x == y
+        (==) _ _ = False
+
+    instance (Show m) => Show (Perhaps m) where
+        show Nowt = "I don't know nowt about it"
+        show (Owt x) =  "It's just owt to do with " ++ show x
