@@ -1,9 +1,11 @@
 -- {-# LANGUAGE DatatypeContexts #-}
+{-# LANGUAGE DeriveAnyClass #-}
 
 module Shapes
 ( Shape, area, nudge, zeroCircle, zeroRect, Baz(..)) where
 
     import Data.Map
+    import GHC.Builtin.Types (falseDataCon)
     
     data Baz b = Foo | Bar b
 
@@ -108,10 +110,13 @@ module Shapes
         bar :: a -> a
         bar a = a 
 
+    data TrifficLight = Blue | Amber | Purple deriving (Foo, Show)
+
     instance Foo TrafficLight where
         bar a = Red
 
     instance Show TrafficLight where
+        show :: TrafficLight -> String
         show Red = "Stop!"
         show Green = "Go!"
         show Yellow = "Quick!"
@@ -127,14 +132,77 @@ module Shapes
         bar (Just Red) = Just Green
         bar (Just x) = Just x
 
+    -- Perhaps is an 'algebraic type'
     data Perhaps a = Nowt | Owt a 
 
+    -- given any Equalable type one can make a Perhaps of it
+    -- and here is the implementation of Eq, which it will need
+    -- in order to be equalable: this is how one tests for the equality 
+    -- of the Perhaps of the type
     instance (Eq m) => Eq (Perhaps m) where
         (==) :: Eq m => Perhaps m -> Perhaps m -> Bool
         (==) Nowt Nowt = True
         (==) (Owt x) (Owt y) = x == y
         (==) _ _ = False
 
+    -- class constraints in instance declarations
+    -- are used to express requirements about the contents of some type
+    -- i.e: the constraint (Show m) means that m must meat the requirements of the type class Show
+    -- effectively, it needs to implement certain functions (mappings)
     instance (Show m) => Show (Perhaps m) where
         show Nowt = "I don't know nowt about it"
         show (Owt x) =  "It's just owt to do with " ++ show x
+
+    data Wubble = Wobble | Wabble | Wybl
+    -- the following doesn't work, because show isn't implemented
+    -- and thus you end up with a recursive loop when doing "show Wybl"
+    -- this is because in the definition of show there's two functions
+    -- show and showPrec that are defined in terms of each other
+    -- 
+    -- use of deriving Show implements the function
+    -- you can start ghc or ghci with -ddump-deriv to see them
+    -- instance Show Wubble where
+    --     show = show
+
+    -- class constraints in class declarations
+    -- used for making a type class a subclass of another type class, i.e:
+    -- the set of Addables is a sub-set of Nums
+    -- Addable is a subclass of Num
+    class (Num a) => Addable a where
+        square :: a -> a
+        square x  = x * x
+
+    -- JS considers any non-empty string to be a true value
+
+
+    class YesNo a where
+        yesno :: a -> Bool
+
+    instance YesNo Bool where
+        yesno :: Bool -> Bool
+        yesno x = x
+
+    instance YesNo Int where
+        yesno :: Int -> Bool
+        yesno x = x /= 0
+
+    instance YesNo Float where
+        yesno :: Float -> Bool
+        yesno x = x /= 0.0
+
+    instance YesNo [a] where
+        yesno :: [a] -> Bool
+        yesno [] = False
+        yesno _ = True
+
+    instance YesNo (Maybe a) where
+        yesno :: Maybe a -> Bool
+        yesno Nothing = False
+        yesno _ = True
+
+    -- The constraint ‘Num a’
+    -- is no smaller than the instance head ‘YesNo a’
+    --   (Use UndecidableInstances to permit this)
+    -- instance (Num a) => YesNo a where
+    --     yesno :: Num -> Bool
+    --     yesno x = x /= (0 :: a)
