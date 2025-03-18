@@ -206,3 +206,13 @@ module Shapes
     -- instance (Num a) => YesNo a where
     --     yesno :: Num -> Bool
     --     yesno x = x /= (0 :: a)
+
+    instance YesNo TrafficLight where
+        yesno :: TrafficLight -> Bool
+        yesno Red = False
+        yesno _ = True
+
+    -- if condition then smthng else smthngels
+
+    yesnoIf :: (YesNo y) => y -> a -> a -> a
+    yesnoIf yn t f = if yesno yn then t else f

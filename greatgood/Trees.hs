@@ -1,4 +1,6 @@
 import GHC.CmmToAsm.AArch64.Instr (ExtMode)
+import GHC.Cmm (b16)
+import qualified Data.Map
 data Tree a = EmptyTree | Node a (Tree a) (Tree a) deriving (Show)
 
 -- Show is the type class
@@ -28,7 +30,7 @@ node EmptyTree = Nothing
 
 isInTree :: (Ord a) => a -> Tree a -> Bool
 isInTree _ EmptyTree = False
-isInTree x (Node y left right) 
+isInTree x (Node y left right)
     | x == y = True
     | x < y = isInTree x left
     | x > y = isInTree x right
@@ -37,3 +39,18 @@ isInTree x (Node y left right)
 treeFromList :: (Ord a) => [a] -> Tree a
 treeFromList = foldr insertion EmptyTree
 -- isInTree 10 $ treeFromList [5,10,3,2,6] = True
+
+instance Functor Tree where
+    fmap :: (a -> b) -> Tree a -> Tree b
+    fmap g EmptyTree = EmptyTree
+    fmap g (Node v l r) = Node (g v) (fmap  g l) (fmap g r)
+
+fmap' :: (a -> b) -> [(k, a)] -> [(k, b)]
+fmap' f [] = []
+fmap' f ((k, v):xs) = (k, f v) : fmap' f xs
+-- fmap' (:"e") [(1,'a'),(2, 'b'),(3,'c')]
+
+-- data constructor constructs a value
+-- type constructor constructs a type
+
+-- is Either a monadic constructor?
