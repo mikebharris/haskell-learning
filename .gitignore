@@ -6,3 +6,6 @@
 .history
 .DS_Store
 project.iml
+.hi
+.o
+main
