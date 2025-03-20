@@ -1,44 +1,29 @@
-module TrainPlanner
-  where
-    import Data.Time
-    -- import Data.List (elemIndex) -- considered using this but it returns a Maybe and I can't use that as an index.
+module TrainPlanner where
 
-    -- duration timetable "0907" "Camborne" "Exeter St Davids" == 150 : PASS
-    -- duration timetable "1023" "Camborne" "Exeter St Davids" == 159 : PASS
-    -- duration timetable "1101" "St Austell" "Par" == 56 : Error!
+  import qualified Data.Map
 
-    -- timetable :: [[String]]
-    -- timetable = [["Penzance", "St Erth", "Camborne", "Redruth", "Truro", "St Austell", "Par", "Bodmin Parkway", "Liskeard", "Plymouth", "Exeter St Davids", "Reading", "London Paddington"],
-    --             ["0844", "0854", "0907", "0914", "0927", "0944", "0951", "1003", "1016", "1040", "1137", "1316", "1344"],
-    --             ["1000", "1010", "1023", "1030", "1043", "1100", "1108", "1119", "1133", "1157", "1302", "1450", "1521"],
-    --             ["1047", "1057", "1112", "1119", "1132", "1150", "1157", "1208", "1221", "1252", "1357", "1539", "1602"]]
+  type Station = String
+  type Time = String
+  type Timetable = [[String]]
+  type Train = Data.Map.Map Station Time
 
+  parse :: Timetable -> [Train]
+  parse (x:xs) = [Data.Map.fromList $ zip x (head xs)]
 
-    duration :: [[String]] -> String -> String -> String -> Int
-    duration tt arrivalTime startStation endStation = duration where
-      duration = floor (toRational (diffUTCTime endTime startTime) / 60) 
-      endTime = stringToUTCTime finishTime 
-      startTime = stringToUTCTime arrivalTime
-      finishTime = tt !! train !! (stationIndex endStation (tt !! 0))
-      train = whichTrain tt (stationIndex startStation (tt !! 0)) arrivalTime
+  duration :: Timetable -> Time -> Station -> Station -> Int
+  duration timetable timeAtDepartureStation departureStation destinationStation = arrivalTime - departureTime where
+    departureTime = toMinutes timeAtDepartureStation
+    arrivalTime = lookupTimeAt destinationStation (head trains)
+    trains = parse timetable
 
-    whichTrain :: [[String]] -> Int -> String -> Int
-    whichTrain tt i runningTime = [t | t <- [1..(length tt - 1)], (tt !! t !! i) == runningTime ] !! 0
+  lookupTimeAt :: Station -> Train -> Int
+  lookupTimeAt station = toMinutes . unbox . Data.Map.lookup station
 
-    stationIndex :: (Eq a) => a -> [a] -> Int
-    stationIndex a [] = 0
-    stationIndex a b = searchIndex a b 0
+  unbox :: Maybe Time -> Time
+  unbox Nothing = ""
+  unbox (Just x) = x
 
-    searchIndex :: (Eq a) => a -> [a] -> Int -> Int
-    searchIndex a (x:xs) i
-      | a == x = i
-      | otherwise = searchIndex a xs (i + 1)
-
-    stringToUTCTime :: String -> UTCTime
-    stringToUTCTime t = UTCTime (today) (timeOfDayToTime (TimeOfDay hh mm 00)) where 
-      today = fromGregorian 2023 05 16
-      hh = read (take 2 t) :: Int
-      mm = read (drop 2 t) :: Int
-
-    fastestTrain :: [[String]] -> String -> String -> String
-    fastestTrain a b c = "1357"
+  toMinutes :: Time -> Int
+  toMinutes t = h * 60 + m where
+      h = read (take 2 t) :: Int
+      m = read (drop 2 t) :: Int
