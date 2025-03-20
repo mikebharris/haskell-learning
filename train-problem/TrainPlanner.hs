@@ -14,11 +14,10 @@ module TrainPlanner where
   makeTrain stations times = Data.Map.fromList $ zip stations times
 
   duration :: Timetable -> Time -> Station -> Station -> Int
-  duration timetable timeAtDepartureStation departureStation destinationStation = arrivalTime - departureTime where
-    departureTime = toMinutes timeAtDepartureStation
+  duration timetable timeAtDepartureStation departureStation destinationStation = arrivalTime - toMinutes timeAtDepartureStation where
     arrivalTime = lookupTimeAt destinationStation nextTrain
+    nextTrain = head $ filter (\t -> Just timeAtDepartureStation <= Data.Map.lookup departureStation t) trains 
     trains = extractTrainsFrom timetable
-    nextTrain = head $ filter (\t -> Data.Map.lookup departureStation t == Just timeAtDepartureStation) trains 
 
   lookupTimeAt :: Station -> Train -> Int
   lookupTimeAt station = toMinutes . unbox . Data.Map.lookup station
