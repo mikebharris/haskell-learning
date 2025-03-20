@@ -13,18 +13,28 @@ main :: IO ()
 main = hspec $ do
   describe "TrainPlanner.duration" $ do
     it "should report the duration of journey between two stations" $ do
-      duration timetable "0907" "Camborne" "Exeter St Davids" `shouldBe` (150 :: Int)
+      duration timetable "0907" "Camborne" "Exeter St Davids" `shouldBe` Right (150 :: Int)
 
     it "should report the duration for first available train" $ do
-      duration timetable "1023" "Camborne" "Exeter St Davids" `shouldBe` (159 :: Int)
+      duration timetable "1023" "Camborne" "Exeter St Davids" `shouldBe` Right (159 :: Int)
 
     it "should report the duration including waiting time at platform" $ do 
-      duration timetable "1101" "St Austell" "Par" `shouldBe` (56 :: Int)
+      duration timetable "1101" "St Austell" "Par" `shouldBe` Right (56 :: Int)
 
     it "should report the duration including waiting time at platform for first train when there is more than one train that departs on or after the time the passenger presents themselves at the station" $ do 
-      duration timetable "0800" "Penzance" "St Erth" `shouldBe` (54 :: Int)
+      duration timetable "0800" "Penzance" "St Erth" `shouldBe` Right (54 :: Int)
 
-    
+    it "should return an InvalidTimeError when given an invalid number of minutes" $ do 
+      duration timetable "0999" "Penzance" "St Erth" `shouldBe` Left InvalidTimeError
+
+    it "should return an InvalidTimeError when given an invalid number of hours" $ do 
+      duration timetable "8800" "Penzance" "St Erth" `shouldBe` Left InvalidTimeError
+
+    it "should return an InvalidTimeError when time given has an invalid number of digits" $ do 
+      duration timetable "123" "Penzance" "St Erth" `shouldBe` Left InvalidTimeError
+
+    it "should return an InvalidTimeError when time given has a non-digits" $ do 
+      duration timetable "$a$a" "Penzance" "St Erth" `shouldBe` Left InvalidTimeError
 
   -- describe "TrainPlanner.fastestTrain" $ do
   --   it "should report the fastest train between two stations" $ do 
