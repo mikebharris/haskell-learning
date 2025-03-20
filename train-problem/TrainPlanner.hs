@@ -7,8 +7,8 @@ module TrainPlanner where
   type Timetable = [[String]]
   type Train = Data.Map.Map Station Time
 
-  parse :: Timetable -> [Train]
-  parse (stations:timesOfTrains) = map (makeTrain stations) timesOfTrains
+  extractTrainsFrom :: Timetable -> [Train]
+  extractTrainsFrom (stations:timesOfTrains) = map (makeTrain stations) timesOfTrains
 
   makeTrain :: [Station] -> [Time] -> Train
   makeTrain stations times = Data.Map.fromList $ zip stations times
@@ -17,7 +17,7 @@ module TrainPlanner where
   duration timetable timeAtDepartureStation departureStation destinationStation = arrivalTime - departureTime where
     departureTime = toMinutes timeAtDepartureStation
     arrivalTime = lookupTimeAt destinationStation nextTrain
-    trains = parse timetable
+    trains = extractTrainsFrom timetable
     nextTrain = head $ filter (\t -> Data.Map.lookup departureStation t == Just timeAtDepartureStation) trains 
 
   lookupTimeAt :: Station -> Train -> Int
