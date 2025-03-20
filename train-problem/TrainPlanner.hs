@@ -7,7 +7,7 @@ module TrainPlanner where
   type Time = String
   type Timetable = [[String]]
   type Train = Data.Map.Map Station Time
-  data JourneyPlannerError = InvalidTimeError | NoSuchStationError deriving (Show, Eq)
+  data JourneyPlannerError = InvalidTimeError | NoSuchStationError | NoSuchJourneyError deriving (Show, Eq)
 
   extractTrainsFrom :: Timetable -> [Train]
   extractTrainsFrom (stations:timesOfTrains) = map (makeTrain stations) timesOfTrains
@@ -20,7 +20,8 @@ module TrainPlanner where
     | toMinutes timeAtDepartureStation == Nothing = Left InvalidTimeError
     | timeLeavingDepartureStation (head trains) == Nothing = Left NoSuchStationError
     | arrivalTime == Nothing = Left NoSuchStationError
-    | otherwise = timeBetween arrivalTime (toMinutes timeAtDepartureStation)
+    | earlier arrivalTime $ lookupTimeAt departureStation nextTrain = Left NoSuchJourneyError 
+    | otherwise = timeBetween (toMinutes timeAtDepartureStation) arrivalTime
     where
       arrivalTime = lookupTimeAt destinationStation nextTrain
       nextTrain = head $ filter (\t -> Just timeAtDepartureStation <= timeLeavingDepartureStation t) trains
@@ -31,6 +32,11 @@ module TrainPlanner where
   timeBetween Nothing _ = Left InvalidTimeError
   timeBetween _ Nothing = Left InvalidTimeError
   timeBetween (Just x) (Just y) = Right (abs $ x - y)
+
+  earlier :: Maybe Int -> Maybe Int -> Bool
+  earlier Nothing _ = False
+  earlier _ Nothing = False
+  earlier (Just x) (Just y) = x <= y
 
   lookupTimeAt :: Station -> Train -> Maybe Int
   lookupTimeAt station = toMinutes . unbox . Data.Map.lookup station

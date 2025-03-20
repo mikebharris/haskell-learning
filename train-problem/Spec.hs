@@ -41,7 +41,13 @@ main = hspec $ do
 
 
     it "should return an NoSuchStationError when end station cannot be found in timetable" $ do 
-      duration timetable "0800" "Penance" "Nottingham" `shouldBe` Left NoSuchStationError
+      duration timetable "0800" "Penzance" "Nottingham" `shouldBe` Left NoSuchStationError
+
+    it "should return an NoSuchJourneyError when end station is before start station" $ do 
+      duration timetable "0800" "Par" "Penzance" `shouldBe` Left NoSuchJourneyError
+
+    it "should return an NoSuchJourneyError when end station == start station" $ do 
+      duration timetable "0800" "Par" "Par" `shouldBe` Left NoSuchJourneyError
 
   -- describe "TrainPlanner.fastestTrain" $ do
   --   it "should report the fastest train between two stations" $ do 
