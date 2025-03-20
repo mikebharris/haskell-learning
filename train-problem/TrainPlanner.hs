@@ -2,12 +2,12 @@ module TrainPlanner where
 
   import qualified Data.Map
   import Data.Char ( isDigit )
-  
+
   type Station = String
   type Time = String
   type Timetable = [[String]]
   type Train = Data.Map.Map Station Time
-  data JourneyPlannerError = InvalidTimeError deriving (Show, Eq)
+  data JourneyPlannerError = InvalidTimeError | NoSuchStationError deriving (Show, Eq)
 
   extractTrainsFrom :: Timetable -> [Train]
   extractTrainsFrom (stations:timesOfTrains) = map (makeTrain stations) timesOfTrains
@@ -16,13 +16,15 @@ module TrainPlanner where
   makeTrain stations times = Data.Map.fromList $ zip stations times
 
   duration :: Timetable -> Time -> Station -> Station -> Either JourneyPlannerError Int
-  duration timetable timeAtDepartureStation departureStation destinationStation 
+  duration timetable timeAtDepartureStation departureStation destinationStation
     | toMinutes timeAtDepartureStation == Nothing = Left InvalidTimeError
-    | otherwise = timeBetween arrivalTime (toMinutes timeAtDepartureStation) 
+    | timeLeavingDepartureStation (head trains) == Nothing = Left NoSuchStationError
+    | otherwise = timeBetween arrivalTime (toMinutes timeAtDepartureStation)
     where
       arrivalTime = lookupTimeAt destinationStation nextTrain
-      nextTrain = head $ filter (\t -> Just timeAtDepartureStation <= Data.Map.lookup departureStation t) trains 
+      nextTrain = head $ filter (\t -> Just timeAtDepartureStation <= timeLeavingDepartureStation t) trains
       trains = extractTrainsFrom timetable
+      timeLeavingDepartureStation = Data.Map.lookup departureStation
 
   timeBetween :: Maybe Int -> Maybe Int -> Either JourneyPlannerError Int
   timeBetween Nothing _ = Left InvalidTimeError
@@ -37,9 +39,9 @@ module TrainPlanner where
   unbox (Just x) = x
 
   toMinutes :: Time -> Maybe Int
-  toMinutes t 
+  toMinutes t
     | length t /= 4 = Nothing
-    | foldl (\b c -> b && not (isDigit c)) True t = Nothing
+    | not (all isDigit t) = Nothing
     | m > 59 = Nothing
     | h > 23 = Nothing
     | otherwise = Just $ h * 60 + m

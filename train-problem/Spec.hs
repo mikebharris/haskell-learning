@@ -36,6 +36,9 @@ main = hspec $ do
     it "should return an InvalidTimeError when time given has a non-digits" $ do 
       duration timetable "$a$a" "Penzance" "St Erth" `shouldBe` Left InvalidTimeError
 
+    it "should return an NoSuchStationError when start station cannot be found in timetable" $ do 
+      duration timetable "0800" "Nottingham" "St Erth" `shouldBe` Left NoSuchStationError
+
   -- describe "TrainPlanner.fastestTrain" $ do
   --   it "should report the fastest train between two stations" $ do 
   --     fastestTrain timetable "Exeter St Davids" "Paddington" `shouldBe` ("1357" :: String)
