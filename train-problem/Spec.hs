@@ -18,8 +18,8 @@ main = hspec $ do
     it "should report the duration for first available train" $ do
       duration timetable "1023" "Camborne" "Exeter St Davids" `shouldBe` (159 :: Int)
 
-  --   it "should report the duration including waiting time at platform" $ do 
-  --     duration timetable "1101" "St Austell" "Par" `shouldBe` (56 :: Int)
+    -- it "should report the duration including waiting time at platform" $ do 
+      -- duration timetable "1101" "St Austell" "Par" `shouldBe` (56 :: Int)
 
   -- describe "TrainPlanner.fastestTrain" $ do
   --   it "should report the fastest train between two stations" $ do 
