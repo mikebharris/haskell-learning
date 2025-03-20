@@ -2,6 +2,7 @@ module TrainPlanner where
 
   import qualified Data.Map
   import Data.Char ( isDigit )
+  import Data.Maybe (isNothing)
 
   type Station = String
   type Time = String
@@ -16,37 +17,31 @@ module TrainPlanner where
   makeTrain stations times = Data.Map.fromList $ zip stations times
 
   duration :: Timetable -> Time -> Station -> Station -> Either JourneyPlannerError Int
-  duration timetable timeAtDepartureStation departureStation destinationStation
-    | toMinutes timeAtDepartureStation == Nothing = Left InvalidTimeError
-    | timeLeavingDepartureStation (head trains) == Nothing = Left NoSuchStationError
-    | arrivalTime == Nothing = Left NoSuchStationError
-    | earlier arrivalTime $ lookupTimeAt departureStation nextTrain = Left NoSuchJourneyError 
-    | otherwise = timeBetween (toMinutes timeAtDepartureStation) arrivalTime
+  duration timetable timeWeArriveAtDepartureStation departureStation destinationStation
+    | isNothing (toMinutes (Just timeWeArriveAtDepartureStation)) = Left InvalidTimeError
+    | isNothing (timeTrainLeavesDepartureStation (head trains)) = Left NoSuchStationError
+    | isNothing (timeTrainArrivesAtDestinationStation nextTrain) = Left NoSuchStationError
+    | earlier (timeTrainArrivesAtDestinationStation nextTrain) (Data.Map.lookup departureStation nextTrain) = Left NoSuchJourneyError
+    | otherwise = timeBetween (toMinutes (Just timeWeArriveAtDepartureStation)) (toMinutes (timeTrainArrivesAtDestinationStation nextTrain))
     where
-      arrivalTime = lookupTimeAt destinationStation nextTrain
-      nextTrain = head $ filter (\t -> Just timeAtDepartureStation <= timeLeavingDepartureStation t) trains
+      timeTrainArrivesAtDestinationStation = Data.Map.lookup destinationStation
+      nextTrain = head $ filter (\t -> Just timeWeArriveAtDepartureStation <= timeTrainLeavesDepartureStation t) trains
       trains = extractTrainsFrom timetable
-      timeLeavingDepartureStation = Data.Map.lookup departureStation
+      timeTrainLeavesDepartureStation = Data.Map.lookup departureStation
 
   timeBetween :: Maybe Int -> Maybe Int -> Either JourneyPlannerError Int
   timeBetween Nothing _ = Left InvalidTimeError
   timeBetween _ Nothing = Left InvalidTimeError
   timeBetween (Just x) (Just y) = Right (abs $ x - y)
 
-  earlier :: Maybe Int -> Maybe Int -> Bool
+  earlier :: Maybe Time -> Maybe Time -> Bool
   earlier Nothing _ = False
   earlier _ Nothing = False
-  earlier (Just x) (Just y) = x <= y
+  earlier x y = toMinutes x <= toMinutes y
 
-  lookupTimeAt :: Station -> Train -> Maybe Int
-  lookupTimeAt station = toMinutes . unbox . Data.Map.lookup station
-
-  unbox :: Maybe Time -> Time
-  unbox Nothing = ""
-  unbox (Just x) = x
-
-  toMinutes :: Time -> Maybe Int
-  toMinutes t
+  toMinutes :: Maybe Time -> Maybe Int
+  toMinutes Nothing = Nothing
+  toMinutes (Just t)
     | length t /= 4 = Nothing
     | not (all isDigit t) = Nothing
     | m > 59 = Nothing
