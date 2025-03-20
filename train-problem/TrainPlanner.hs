@@ -19,6 +19,7 @@ module TrainPlanner where
   duration timetable timeAtDepartureStation departureStation destinationStation
     | toMinutes timeAtDepartureStation == Nothing = Left InvalidTimeError
     | timeLeavingDepartureStation (head trains) == Nothing = Left NoSuchStationError
+    | arrivalTime == Nothing = Left NoSuchStationError
     | otherwise = timeBetween arrivalTime (toMinutes timeAtDepartureStation)
     where
       arrivalTime = lookupTimeAt destinationStation nextTrain
