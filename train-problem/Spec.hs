@@ -49,6 +49,6 @@ main = hspec $ do
     it "should return a NoSuchJourneyError when end station == start station" $ do 
       duration timetable "0800" "Par" "Par" `shouldBe` Left NoSuchJourneyError
 
-  -- describe "TrainPlanner.fastestTrain" $ do
-  --   it "should report the fastest train between two stations" $ do 
-  --     fastestTrain timetable "Exeter St Davids" "Paddington" `shouldBe` ("1357" :: String)
+  describe "TrainPlanner.fastestTrain" $ do
+    it "should report the fastest train between two stations" $ do 
+      departureTimeOfFastestTrain timetable "Exeter St Davids" "London Paddington" `shouldBe` Right ("1357" :: String)

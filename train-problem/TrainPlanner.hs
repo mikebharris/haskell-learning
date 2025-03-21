@@ -2,13 +2,38 @@ module TrainPlanner where
 
   import qualified Data.Map
   import Data.Char ( isDigit )
-  import Data.Maybe (isNothing)
-
+  import Data.List (elemIndex)
+  
   type Station = String
   type Time = String
   type Timetable = [[String]]
+  type Route = [String]
   type Train = Data.Map.Map Station Time
   data JourneyPlannerError = InvalidTimeError | NoSuchStationError | NoSuchJourneyError deriving (Show, Eq)
+
+  duration :: Timetable -> Time -> Station -> Station -> Either JourneyPlannerError Int
+  duration timetable timeWeArriveAtDepartureStation departureStation destinationStation
+    | not (isValidTime timeWeArriveAtDepartureStation) = Left InvalidTimeError
+    | not (isValidStation route departureStation) = Left NoSuchStationError
+    | not (isValidStation route destinationStation) = Left NoSuchStationError
+    | not (isValidJourney route departureStation destinationStation) = Left NoSuchJourneyError
+    | otherwise = Right $ minutesBetween timeTrainArrivesAtDestinationStaion timeWeArriveAtDepartureStation 
+    where
+      route = head timetable
+      trains = extractTrainsFrom timetable
+      timeTrainArrivesAtDestinationStaion = timeAt destinationStation nextTrain 
+      nextTrain = head $ filter (\t -> timeWeArriveAtDepartureStation <= timeAt departureStation t) trains
+
+  departureTimeOfFastestTrain :: Timetable -> Station -> Station -> Either JourneyPlannerError Time
+  departureTimeOfFastestTrain timetable departureStation destinationStation
+    | not (isValidStation route departureStation) = Left NoSuchStationError
+    | not (isValidStation route destinationStation) = Left NoSuchStationError
+    | not (isValidJourney route departureStation destinationStation) = Left NoSuchJourneyError
+    | otherwise = Right $ timeAt departureStation fastestTrain  
+    where
+      route = head timetable
+      trains = extractTrainsFrom timetable
+      fastestTrain = fastestTrainBetween departureStation destinationStation trains
 
   extractTrainsFrom :: Timetable -> [Train]
   extractTrainsFrom (stations:timesOfTrains) = map (makeTrain stations) timesOfTrains
@@ -16,37 +41,36 @@ module TrainPlanner where
   makeTrain :: [Station] -> [Time] -> Train
   makeTrain stations times = Data.Map.fromList $ zip stations times
 
-  duration :: Timetable -> Time -> Station -> Station -> Either JourneyPlannerError Int
-  duration timetable timeWeArriveAtDepartureStation departureStation destinationStation
-    | isNothing (toMinutes (Just timeWeArriveAtDepartureStation)) = Left InvalidTimeError
-    | isNothing (timeTrainLeavesDepartureStation (head trains)) = Left NoSuchStationError
-    | isNothing (timeTrainArrivesAtDestinationStation nextTrain) = Left NoSuchStationError
-    | earlier (timeTrainArrivesAtDestinationStation nextTrain) (Data.Map.lookup departureStation nextTrain) = Left NoSuchJourneyError
-    | otherwise = timeBetween (toMinutes (Just timeWeArriveAtDepartureStation)) (toMinutes (timeTrainArrivesAtDestinationStation nextTrain))
-    where
-      timeTrainArrivesAtDestinationStation = Data.Map.lookup destinationStation
-      nextTrain = head $ filter (\t -> Just timeWeArriveAtDepartureStation <= timeTrainLeavesDepartureStation t) trains
-      trains = extractTrainsFrom timetable
-      timeTrainLeavesDepartureStation = Data.Map.lookup departureStation
+  fastestTrainBetween :: Station -> Station -> [Train] -> Train
+  fastestTrainBetween _ _ [t] = t
+  fastestTrainBetween s1 s2 (t:ts) = fasterTrain t $ fastestTrainBetween s1 s2 ts where
+    fasterTrain t1 t2 = if journeyTime t1 > journeyTime t2 then t2 else t1 where
+      journeyTime t = minutesBetween (timeAt s2 t) (timeAt s1 t)
 
-  timeBetween :: Maybe Int -> Maybe Int -> Either JourneyPlannerError Int
-  timeBetween Nothing _ = Left InvalidTimeError
-  timeBetween _ Nothing = Left InvalidTimeError
-  timeBetween (Just x) (Just y) = Right (abs $ x - y)
+  minutesBetween :: Time -> Time -> Int
+  minutesBetween time1 time2 = abs (toMinutes time1 - toMinutes time2)
 
-  earlier :: Maybe Time -> Maybe Time -> Bool
-  earlier Nothing _ = False
-  earlier _ Nothing = False
-  earlier x y = toMinutes x <= toMinutes y
+  toMinutes :: Time -> Int
+  toMinutes t = hourPart t * 60 + minutePart t
+  
+  minutePart :: Time -> Int
+  minutePart t = read (drop 2 t)
 
-  toMinutes :: Maybe Time -> Maybe Int
-  toMinutes Nothing = Nothing
-  toMinutes (Just t)
-    | length t /= 4 = Nothing
-    | not (all isDigit t) = Nothing
-    | m > 59 = Nothing
-    | h > 23 = Nothing
-    | otherwise = Just $ h * 60 + m
-    where
-        h = read (take 2 t) :: Int
-        m = read (drop 2 t) :: Int
+  hourPart :: Time -> Int
+  hourPart t = read (take 2 t)
+
+  timeAt :: Station -> Train -> Time
+  timeAt station train = time where
+    (Just time) = Data.Map.lookup station train
+
+  isValidTime :: Time -> Bool
+  isValidTime t = (length t == 4) && all isDigit t && (minutePart t < 60) && (hourPart t < 24)
+  
+  isValidStation :: Route -> Station -> Bool
+  isValidStation route station = station `elem` route
+
+  isValidJourney :: Route -> Station -> Station -> Bool
+  isValidJourney route departureStation destinationStation = departureIndex < destinationIndex where
+    (Just departureIndex) = elemIndex departureStation route
+    (Just destinationIndex) = elemIndex destinationStation route
+
