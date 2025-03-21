@@ -9,3 +9,5 @@ project.iml
 .hi
 .o
 main
+.ghc*
+dist-newstyle
