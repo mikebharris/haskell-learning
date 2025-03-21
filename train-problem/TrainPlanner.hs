@@ -36,10 +36,8 @@ module TrainPlanner where
       fastestTrain = fastestTrainBetween departureStation destinationStation trains
 
   extractTrainsFrom :: Timetable -> [Train]
-  extractTrainsFrom (stations:timesOfTrains) = map (makeTrain stations) timesOfTrains
-
-  makeTrain :: [Station] -> [Time] -> Train
-  makeTrain stations times = Data.Map.fromList $ zip stations times
+  extractTrainsFrom (stations:timesOfTrains) = map (makeTrain stations) timesOfTrains where
+    makeTrain stations times = Data.Map.fromList $ zip stations times
 
   fastestTrainBetween :: Station -> Station -> [Train] -> Train
   fastestTrainBetween _ _ [t] = t
@@ -48,11 +46,9 @@ module TrainPlanner where
       journeyTime t = minutesBetween (timeAt s2 t) (timeAt s1 t)
 
   minutesBetween :: Time -> Time -> Int
-  minutesBetween time1 time2 = abs (toMinutes time1 - toMinutes time2)
+  minutesBetween time1 time2 = abs (toMinutes time1 - toMinutes time2) where
+    toMinutes t = hourPart t * 60 + minutePart t
 
-  toMinutes :: Time -> Int
-  toMinutes t = hourPart t * 60 + minutePart t
-  
   minutePart :: Time -> Int
   minutePart t = read (drop 2 t)
 
