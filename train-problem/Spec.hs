@@ -52,3 +52,6 @@ main = hspec $ do
   describe "TrainPlanner.fastestTrain" $ do
     it "should report the fastest train between two stations" $ do 
       departureTimeOfFastestTrain timetable "Exeter St Davids" "London Paddington" `shouldBe` Right ("1357" :: String)
+  describe "TrainPlanner.fastestTrain" $ do
+    it "should report the earliest of two trains when there is a tie between fastest trains" $ do 
+      departureTimeOfFastestTrain timetable "Par" "Bodmin Parkway" `shouldBe` Right ("1108" :: String)
